@@ -82,7 +82,6 @@ const App = () => {
     } catch {
       setExplanation("No event data available for this date.");
     }
-  };
 
 const fetchAIResponse = async () => {
   try {
@@ -156,10 +155,7 @@ const fetchAIResponse = async () => {
   }, [countdownDate]);
 
   return (
-    <div
-      className={`min-h-screen bg-cover bg-center font-bahnschrift ${theme === "dark" ? "text-white" : "text-black"}`}
-      style={{ backgroundImage: `url(${background})` }}
-    >
+    <div className={`min-h-screen bg-cover bg-center font-bahnschrift ${theme === "dark" ? "text-white" : "text-black"}`}style={{ backgroundImage: `url(${background})` }}>
      <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-30 text-black"}`}>
   <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
   <div className="space-x-2">
@@ -323,6 +319,6 @@ const fetchAIResponse = async () => {
 
     </div>
   );
-};
-
+</div>
+  );
 export default App;
