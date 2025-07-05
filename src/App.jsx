@@ -185,7 +185,7 @@ const fetchAIResponse = async () => {
 
   <button
     onClick={addBookmark}
-    className={`mt-2 px-3 py-1 rounded ${theme === 'dark' ? 'bg-white bg-opacity-30 text-white' : 'bg-white bg-opacity-30 text-black'}`}
+    className={`mt-2 px-3 py-1 rounded ${theme === 'dark' ? 'bg-black bg-opacity-30 text-white' : 'bg-white bg-opacity-30 text-black'}`}
   >
     Bookmark This Day
   </button>
