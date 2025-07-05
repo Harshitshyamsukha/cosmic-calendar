@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import { resolve } from 'path';
 
 export default defineConfig({
   plugins: [react()],
-  server: {
-    historyApiFallback: true
-  }
+  root: './src',
+  build: {
+    outDir: '../dist',
+    emptyOutDir: true,
+  },
 });
