@@ -160,21 +160,20 @@ const fetchAIResponse = async () => {
       className={`min-h-screen bg-cover bg-center font-bahnschrift ${theme === "dark" ? "text-white" : "text-black"}`}
       style={{ backgroundImage: `url(${background})` }}
     >
-      <div className="bg-black bg-opacity-50 p-4 flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Cosmic Calendar</h1>
-        <div className="space-x-2">
-          {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
-            <button
-              key={btn}
-              className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
-              onClick={() => handlePanelToggle(btn)}
-            >
-              {btn}
-            </button>
-          ))}
-        </div>
-      </div>
-
+     <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-90 text-black"}`}>
+  <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
+  <div className="space-x-2">
+    {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
+      <button
+        key={btn}
+        className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
+        onClick={() => handlePanelToggle(btn)}
+      >
+        {btn}
+      </button>
+    ))}
+  </div>
+</div>
       <div className="flex flex-col items-center mt-8">
         <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
         <p className="mt-4 text-lg">Selected Date: {date.toDateString()}</p>
