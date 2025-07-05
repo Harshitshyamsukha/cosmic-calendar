@@ -82,6 +82,7 @@ const App = () => {
     } catch {
       setExplanation("No event data available for this date.");
     }
+  };
 
 const fetchAIResponse = async () => {
   try {
@@ -155,170 +156,169 @@ const fetchAIResponse = async () => {
   }, [countdownDate]);
 
   return (
-    <div className={`min-h-screen bg-cover bg-center font-bahnschrift ${theme === "dark" ? "text-white" : "text-black"}`}style={{ backgroundImage: `url(${background})` }}>
-     <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-  <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
-  <div className="space-x-2">
-    {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
-      <button
-        key={btn}
-        className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
-        onClick={() => handlePanelToggle(btn)}
-      >
-        {btn}
-      </button>
-    ))}
-  </div>
-</div>
-      <div className="flex flex-col items-center mt-8">
-          <div className={`calendar-wrapper ${theme === 'dark' ? 'calendar-dark' : 'calendar-light'}`}>
-        <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
-       <div className={`mt-4 px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-30 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-  <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
-</div>
-        <button
-  onClick={addBookmark}
-  className={`mt-2 px-3 py-1 rounded ${
-    theme === 'dark'
-      ? 'bg-black bg-opacity-20 text-white hover:bg-opacity-40'
-      : 'bg-white bg-opacity-20 text-black hover:bg-opacity-30'
-  }`}
->
-  Bookmark This Day
-</button>
-
-      </div>
-
-      <div className={`max-w-xl mx-auto mt-6 p-4 rounded ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-        <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
-        <p>{explanation}</p>
-      </div>
-
-      {activePanel && (
-        <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-xl font-semibold">{activePanel}</h2>
-            <button onClick={() => setActivePanel('')}>✕</button>
-          </div>
-
-          {activePanel === 'Quiz' && (
-  <div className="animate-fadeIn transition-all duration-500">
-    {quizIndex >= quizQuestions.length ? (
-      <div className="text-center">
-        <h3 className="text-2xl font-bold mb-4">Quiz Completed!</h3>
-        <p className="text-lg mb-2">Your Score: {score} / {quizQuestions.length}</p>
-        <button
-          className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
-          onClick={() => {
-            setQuizIndex(0);
-            setScore(0);
-            setSelectedOption("");
-            setFeedback("");
-          }}
-        >
-          Restart Quiz
-        </button>
-      </div>
-    ) : (
-      <div>
-        <p className="font-semibold">Question {quizIndex + 1} of {quizQuestions.length}</p>
-<div className="w-full bg-gray-300 rounded-full h-2 mb-4">
-  <div
-    className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-    style={{ width: `${((quizIndex + 1) / quizQuestions.length) * 100}%` }}
-  ></div>
-</div>
-<p className="mt-2">{quizQuestions[quizIndex].question}</p>
-        <ul className="mt-2 space-y-1">
-          {quizQuestions[quizIndex].options.map((opt, idx) => (
-            <li key={idx}>
-              <label>
-                <input
-                  type="radio"
-                  name="quiz"
-                  value={opt}
-                  checked={selectedOption === opt}
-                  onChange={(e) => setSelectedOption(e.target.value)}
-                /> {opt}
-              </label>
-            </li>
+    <div className={`min-h-screen bg-cover bg-center font-bahnschrift ${theme === "dark" ? "text-white" : "text-black"}`} style={{ backgroundImage: `url(${background})` }}>
+      <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+        <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
+        <div className="space-x-2">
+          {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
+            <button
+              key={btn}
+              className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
+              onClick={() => handlePanelToggle(btn)}
+            >
+              {btn}
+            </button>
           ))}
-        </ul>
-        <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={handleQuizAnswer}>Submit Answer</button>
-        <p className="mt-2">{feedback}</p>
-        <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={nextQuizQuestion}>Next Question</button>
-      </div>
-    )}
-  </div>
-)}
-          {activePanel === 'Bookmarks' && (
-           <div className="animate-fadeIn transition-all duration-500">
-              {bookmarks.length === 0 ? <p>No bookmarks yet.</p> : (
-                <ul>
-                  {bookmarks.map((b, i) => (
-                    <li key={i}>{b.date}</li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          )}
-
-          {activePanel === 'Countdown' && (
-  <div className="animate-fadeIn transition-all duration-500">
-    <input
-      type="datetime-local"
-      className="text-black p-1 rounded"
-      onChange={(e) => setCountdownDate(new Date(e.target.value))}
-    />
-    <p className="mt-2 text-lg">{timeLeft}</p>
-  </div>
-)}
-
-          {activePanel === 'Share' && (
-            <div className="animate-fadeIn transition-all duration-500">
-              <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2" onClick={() => navigator.clipboard.writeText(window.location.href)}>Copy Link</button>
-              <button className="bg-green-500 text-white px-3 py-1 rounded" onClick={() => window.open(`https://twitter.com/intent/tweet?text=Check out this cosmic event: ${window.location.href}`, '_blank')}>Share on Twitter</button>
-            </div>
-          )}
-
-          {activePanel === 'Fact' && (
-            <div className="animate-fadeIn transition-all duration-500">
-              <p>{cosmicFacts[factIndex]}</p>
-              <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
-            </div>
-          )}
-
-          {activePanel === 'Settings' && (
-            <div className="animate-fadeIn transition-all duration-500">
-              <button className="bg-white bg-opacity-30 px-3 py-1 rounded" onClick={toggleTheme}>Toggle Theme</button>
-            </div>
-          )}
         </div>
-      )}
-
-      <div className="fixed bottom-4 right-4">
-        <button className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700" onClick={() => setShowChat(!showChat)}>💬</button>
       </div>
-
-      {showChat && (
-        <div className="fixed bottom-20 right-4 bg-black bg-opacity-80 p-4 rounded-lg w-72 text-white">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-lg font-semibold">Chatbot</h2>
-            <button onClick={() => setShowChat(false)}>✕</button>
+      <div className="flex flex-col items-center mt-8">
+        <div className={`calendar-wrapper ${theme === 'dark' ? 'calendar-dark' : 'calendar-light'}`}>
+          <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
+          <div className={`mt-4 px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-30 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+            <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
           </div>
-          <input
-            className="w-full p-2 rounded text-black"
-            placeholder="Ask something about space..."
-            value={userInput}
-            onChange={(e) => setUserInput(e.target.value)}
-          />
-          <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={fetchAIResponse}>Submit</button>
-          <p className="mt-2">{aiResponse}</p>
+          <button
+            onClick={addBookmark}
+            className={`mt-2 px-3 py-1 rounded ${
+              theme === 'dark'
+                ? 'bg-black bg-opacity-20 text-white hover:bg-opacity-40'
+                : 'bg-white bg-opacity-20 text-black hover:bg-opacity-30'
+            }`}
+          >
+            Bookmark This Day
+          </button>
         </div>
-      )}
 
+        <div className={`max-w-xl mx-auto mt-6 p-4 rounded ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+          <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
+          <p>{explanation}</p>
+        </div>
+
+        {activePanel && (
+          <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-xl font-semibold">{activePanel}</h2>
+              <button onClick={() => setActivePanel('')}>✕</button>
+            </div>
+
+            {activePanel === 'Quiz' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                {quizIndex >= quizQuestions.length ? (
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-4">Quiz Completed!</h3>
+                    <p className="text-lg mb-2">Your Score: {score} / {quizQuestions.length}</p>
+                    <button
+                      className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
+                      onClick={() => {
+                        setQuizIndex(0);
+                        setScore(0);
+                        setSelectedOption("");
+                        setFeedback("");
+                      }}
+                    >
+                      Restart Quiz
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="font-semibold">Question {quizIndex + 1} of {quizQuestions.length}</p>
+                    <div className="w-full bg-gray-300 rounded-full h-2 mb-4">
+                      <div
+                        className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${((quizIndex + 1) / quizQuestions.length) * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="mt-2">{quizQuestions[quizIndex].question}</p>
+                    <ul className="mt-2 space-y-1">
+                      {quizQuestions[quizIndex].options.map((opt, idx) => (
+                        <li key={idx}>
+                          <label>
+                            <input
+                              type="radio"
+                              name="quiz"
+                              value={opt}
+                              checked={selectedOption === opt}
+                              onChange={(e) => setSelectedOption(e.target.value)}
+                            /> {opt}
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                    <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={handleQuizAnswer}>Submit Answer</button>
+                    <p className="mt-2">{feedback}</p>
+                    <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={nextQuizQuestion}>Next Question</button>
+                  </div>
+                )}
+              </div>
+            )}
+            {activePanel === 'Bookmarks' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                {bookmarks.length === 0 ? <p>No bookmarks yet.</p> : (
+                  <ul>
+                    {bookmarks.map((b, i) => (
+                      <li key={i}>{b.date}</li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
+
+            {activePanel === 'Countdown' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                <input
+                  type="datetime-local"
+                  className="text-black p-1 rounded"
+                  onChange={(e) => setCountdownDate(new Date(e.target.value))}
+                />
+                <p className="mt-2 text-lg">{timeLeft}</p>
+              </div>
+            )}
+
+            {activePanel === 'Share' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2" onClick={() => navigator.clipboard.writeText(window.location.href)}>Copy Link</button>
+                <button className="bg-green-500 text-white px-3 py-1 rounded" onClick={() => window.open(`https://twitter.com/intent/tweet?text=Check out this cosmic event: ${window.location.href}`, '_blank')}>Share on Twitter</button>
+              </div>
+            )}
+
+            {activePanel === 'Fact' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                <p>{cosmicFacts[factIndex]}</p>
+                <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
+              </div>
+            )}
+
+            {activePanel === 'Settings' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                <button className="bg-white bg-opacity-30 px-3 py-1 rounded" onClick={toggleTheme}>Toggle Theme</button>
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="fixed bottom-4 right-4">
+          <button className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700" onClick={() => setShowChat(!showChat)}>💬</button>
+        </div>
+
+        {showChat && (
+          <div className="fixed bottom-20 right-4 bg-black bg-opacity-80 p-4 rounded-lg w-72 text-white">
+            <div className="flex justify-between items-center mb-2">
+              <h2 className="text-lg font-semibold">Chatbot</h2>
+              <button onClick={() => setShowChat(false)}>✕</button>
+            </div>
+            <input
+              className="w-full p-2 rounded text-black"
+              placeholder="Ask something about space..."
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+            />
+            <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={fetchAIResponse}>Submit</button>
+            <p className="mt-2">{aiResponse}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
-</div>
-  );
+};
+
 export default App;
