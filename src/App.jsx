@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Client } from "@gradio/client"; 
+import { useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+
+const panelRef = useRef(null);
 
 const quizQuestions = [
   { question: "What is the age of the universe?", options: ["13.8 billion years", "4.5 billion years", "10 million years"], answer: "13.8 billion years" },
@@ -133,7 +137,22 @@ const fetchAIResponse = async () => {
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
-
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+    if (panelRef.current && !panelRef.current.contains(event.target)) {
+    setActivePanel(""); // Close the panel
+    }
+    };
+    
+    if (activePanel) {
+    document.addEventListener("mousedown", handleClickOutside);
+    }
+    
+    return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+    };
+    }, [activePanel]);
+    
   useEffect(() => {
     fetchBackground(date);
   }, [date]);
@@ -188,14 +207,18 @@ const fetchAIResponse = async () => {
       </div>
 
       {activePanel && (
-        <div className={`absolute top-20 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-80 text-white" : "bg-white bg-opacity-90 text-black"}`}>
-          <div className="flex justify-between items-center mb-2">
+<div ref={panelRef} className={`absolute top-32 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg shadow-md ${theme === "dark" ? "bg-black bg-opacity-80 text-white" : "bg-white bg-opacity-90 text-black"}`} >          <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl font-semibold">{activePanel}</h2>
             <button onClick={() => setActivePanel('')}>✕</button>
           </div>
 
           {activePanel === 'Quiz' && (
-  <div className="animate-fadeIn transition-all duration-500">
+ <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: 20 }}
+    transition={{ duration: 0.4 }}
+  >
     {quizIndex >= quizQuestions.length ? (
       <div className="text-center">
         <h3 className="text-2xl font-bold mb-4">Quiz Completed!</h3>
@@ -242,7 +265,7 @@ const fetchAIResponse = async () => {
         <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={nextQuizQuestion}>Next Question</button>
       </div>
     )}
-  </div>
+  </motion.div>
 )}
           {activePanel === 'Bookmarks' && (
            <div className="animate-fadeIn transition-all duration-500">
@@ -293,9 +316,16 @@ const fetchAIResponse = async () => {
         <button className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700" onClick={() => setShowChat(!showChat)}>💬</button>
       </div>
 
+      <AnimatePresence>
       {showChat && (
-        <div className="fixed bottom-20 right-4 bg-black bg-opacity-80 p-4 rounded-lg w-72 text-white">
-          <div className="flex justify-between items-center mb-2">
+      <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 20 }}
+      transition={{ duration: 0.4 }}
+      className={`fixed bottom-20 right-4 ${theme === "dark" ? "bg-black bg-opacity-80" : "bg-white bg-opacity-90 text-black"} p-4 rounded-lg w-72`}
+        >        
+        <div className="flex justify-between items-center mb-2">
             <h2 className="text-lg font-semibold">Chatbot</h2>
             <button onClick={() => setShowChat(false)}>✕</button>
           </div>
@@ -307,10 +337,10 @@ const fetchAIResponse = async () => {
           />
           <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={fetchAIResponse}>Submit</button>
           <p className="mt-2">{aiResponse}</p>
-        </div>
+      </motion.div>
       )}
 
-    </div>
+  </AnimatePresence>
   );
 };
 
