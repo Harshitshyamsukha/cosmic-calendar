@@ -319,7 +319,7 @@ const fetchAIResponse = async () => {
             <p className="mt-2">{aiResponse}</p>
           </div>
         )}
-      </div>
+    
      <Analytics />
     </div>
   );
