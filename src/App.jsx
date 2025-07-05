@@ -188,7 +188,7 @@ const fetchAIResponse = async () => {
       </div>
 
       {activePanel && (
-        <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-30 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+        <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl font-semibold">{activePanel}</h2>
             <button onClick={() => setActivePanel('')}>✕</button>
