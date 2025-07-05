@@ -172,22 +172,24 @@ const fetchAIResponse = async () => {
         </div>
       </div>
       <div className="flex flex-col items-center mt-8">
-        <div className={`${theme === 'light' ? 'light' : ''} w-full`}>
-          <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
-          <div className={`mt-4 px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-30 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-            <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
-          </div>
-          <button
-            onClick={addBookmark}
-            className={`mt-2 px-3 py-1 rounded ${
-              theme === 'dark'
-                ? 'bg-black bg-opacity-20 text-white hover:bg-opacity-40 text-center'
-                : 'bg-white bg-opacity-20 text-black hover:bg-opacity-30 text-center'
-            }`}
-          >
-            Bookmark This Day
-          </button>
-        </div>
+  <div className={`${theme === 'light' ? 'light' : ''}`}>
+    <div className="inline-block">
+      <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
+    </div>
+  </div>
+
+  <div className={`mt-4 px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+    <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
+  </div>
+
+  <button
+    onClick={addBookmark}
+    className={`mt-2 px-3 py-1 rounded ${theme === 'dark' ? 'bg-white bg-opacity-30 text-white' : 'bg-white bg-opacity-30 text-black'}`}
+  >
+    Bookmark This Day
+  </button>
+</div>
+
 
         <div className={`max-w-xl mx-auto mt-6 p-4 rounded ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
           <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
