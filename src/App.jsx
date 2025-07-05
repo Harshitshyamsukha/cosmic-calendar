@@ -221,8 +221,6 @@ const fetchAIResponse = async () => {
   ></div>
 </div>
 <p className="mt-2">{quizQuestions[quizIndex].question}</p>
-
-        <p className="mt-2">{quizQuestions[quizIndex].question}</p>
         <ul className="mt-2 space-y-1">
           {quizQuestions[quizIndex].options.map((opt, idx) => (
             <li key={idx}>
