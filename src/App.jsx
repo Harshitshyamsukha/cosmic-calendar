@@ -181,8 +181,8 @@ const fetchAIResponse = async () => {
             onClick={addBookmark}
             className={`mt-2 px-3 py-1 rounded ${
               theme === 'dark'
-                ? 'bg-black bg-opacity-20 text-white hover:bg-opacity-40'
-                : 'bg-white bg-opacity-20 text-black hover:bg-opacity-30'
+                ? 'bg-black bg-opacity-20 text-white hover:bg-opacity-40 text-center'
+                : 'bg-white bg-opacity-20 text-black hover:bg-opacity-30 text-center'
             }`}
           >
             Bookmark This Day
