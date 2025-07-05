@@ -341,6 +341,7 @@ const fetchAIResponse = async () => {
       )}
 
   </AnimatePresence>
+      </div>
   );
 };
 
