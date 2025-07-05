@@ -176,7 +176,9 @@ const fetchAIResponse = async () => {
 </div>
       <div className="flex flex-col items-center mt-8">
         <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
-        <p className="mt-4 text-lg">Selected Date: {date.toDateString()}</p>
+       <div className={`mt-4 px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white text-black"}`}>
+  <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
+</div>
         <button onClick={addBookmark} className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded">Bookmark This Day</button>
       </div>
 
