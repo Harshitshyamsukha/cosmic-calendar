@@ -44,12 +44,12 @@ button {
 }
 
 .light {
-  background-color: #f0f0f0;
+  background-color: rgba(255, 255, 255, 0.2);
   color: #000;
 }
 
 .light .react-calendar {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 0.3);
   color: black;
 }
 
