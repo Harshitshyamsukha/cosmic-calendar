@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  font-family: 'Bahnschrift Semi Condensed', sans-serif;
+  background-color: #000;
+  color: #fff;
+}
+
+.react-calendar {
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 12px;
+  padding: 1rem;
+  color: white;
+}
+
+.react-calendar__tile {
+  background: transparent;
+  color: white;
+}
+
+.react-calendar__tile--active {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-radius: 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.light {
+  background-color: #f0f0f0;
+  color: #000;
+}
+
+.light .react-calendar {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: black;
+}
+
+.light .react-calendar__tile {
+  color: black;
+}
+
+.light .react-calendar__tile--active {
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+
+.light button {
+  color: #000;
+}
+
+.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.light ::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
+}
+.light .react-calendar__tile--now {
+  background: rgba(0, 0, 0, 0.1) !important;
+}
