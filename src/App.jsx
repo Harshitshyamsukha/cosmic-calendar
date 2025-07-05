@@ -181,13 +181,13 @@ const fetchAIResponse = async () => {
         <button onClick={addBookmark} className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded">Bookmark This Day</button>
       </div>
 
-      <div className="max-w-xl mx-auto mt-6 bg-black bg-opacity-60 p-4 rounded">
+      <div className={`max-w-xl mx-auto mt-6 p-4 rounded ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-90 text-black"}`}>
         <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
         <p>{explanation}</p>
       </div>
 
       {activePanel && (
-        <div className="absolute top-20 left-1/2 transform -translate-x-1/2 bg-black bg-opacity-80 p-4 rounded-lg w-11/12 max-w-lg text-white">
+        <div className={`absolute top-20 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-80 text-white" : "bg-white bg-opacity-90 text-black"}`}>
           <div className="flex justify-between items-center mb-2">
             <h2 className="text-xl font-semibold">{activePanel}</h2>
             <button onClick={() => setActivePanel('')}>✕</button>
