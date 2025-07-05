@@ -160,7 +160,7 @@ const fetchAIResponse = async () => {
       className={`min-h-screen bg-cover bg-center font-bahnschrift ${theme === "dark" ? "text-white" : "text-black"}`}
       style={{ backgroundImage: `url(${background})` }}
     >
-     <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-90 text-black"}`}>
+     <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-30 text-black"}`}>
   <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
   <div className="space-x-2">
     {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
@@ -182,7 +182,7 @@ const fetchAIResponse = async () => {
         <button onClick={addBookmark} className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded">Bookmark This Day</button>
       </div>
 
-      <div className={`max-w-xl mx-auto mt-6 p-4 rounded ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-90 text-black"}`}>
+      <div className={`max-w-xl mx-auto mt-6 p-4 rounded ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
         <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
         <p>{explanation}</p>
       </div>
