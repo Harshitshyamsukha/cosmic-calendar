@@ -322,7 +322,7 @@ const fetchAIResponse = async () => {
         )}
     
      <Analytics />
-      <SpeedInsights/>
+      <SpeedInsights />
     </div>
   );
 };
