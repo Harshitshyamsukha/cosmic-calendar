@@ -12,6 +12,7 @@
     "react-calendar": "^4.0.0",
     "react-dom": "^18.2.0",
     "@vercel/analytics": "^1.1.1"
+    "@vercel/speed-insights": "^1.0.1"
   },
   "devDependencies": {
     "@gradio/client": "^1.15.4",
