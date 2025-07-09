@@ -173,30 +173,32 @@ const fetchAIResponse = async () => {
           ))}
         </div>
       </div>
-      <div className="flex flex-col items-center mt-8">
-  <div className={`${theme === 'light' ? 'light' : ''}`}>
-    <div className="inline-block">
+     <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-16 mt-8 gap-8">
+  {/* Left Column: Calendar, Date, Bookmark */}
+  <div className="flex flex-col items-start gap-4">
+    <div className={`${theme === 'light' ? 'light' : ''}`}>
       <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
     </div>
+
+    <div className={`px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+      <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
+    </div>
+
+    <button
+      onClick={addBookmark}
+      className={`px-3 py-1 rounded ${theme === 'dark' ? 'bg-black bg-opacity-40 text-white' : 'bg-white bg-opacity-40 text-black'}`}
+    >
+      Bookmark This Day
+    </button>
   </div>
 
-  <div className={`mt-4 px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-    <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
+  {/* Right Column: Fact Info */}
+  <div className={`flex-1 max-w-2xl bg-opacity-60 p-4 rounded self-start ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`}>
+    <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
+    <p>{explanation}</p>
   </div>
-
-  <button
-    onClick={addBookmark}
-    className={`mt-2 px-3 py-1 rounded ${theme === 'dark' ? 'bg-black bg-opacity-30 text-white' : 'bg-white bg-opacity-30 text-black'}`}
-  >
-    Bookmark This Day
-  </button>
 </div>
 
-
-        <div className={`max-w-xl mx-auto mt-6 p-4 rounded ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-          <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
-          <p>{explanation}</p>
-        </div>
 
         {activePanel && (
           <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
