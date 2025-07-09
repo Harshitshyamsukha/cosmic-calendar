@@ -4,7 +4,6 @@ import "react-calendar/dist/Calendar.css";
 import { Client } from "@gradio/client"; 
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
-import { motion, AnimatePresence } from "framer-motion";
 
 const quizQuestions = [
   { question: "What is the age of the universe?", options: ["13.8 billion years", "4.5 billion years", "10 million years"], answer: "13.8 billion years" },
@@ -299,65 +298,164 @@ useEffect(() => {
     return () => clearInterval(timer);
   }, [countdownDate]);
 
+  // Extract background image logic to a variable for clarity and to avoid nested ternary.
+  let bgImage = "";
+  if (viewMode === "event") {
+    bgImage = `url(${background})`;
+  } else if (viewMode === "constellation") {
+    bgImage = `url("https://upload.wikimedia.org/wikipedia/commons/3/37/Constellations_equirectangular.png")`;
+  } else {
+    bgImage = `url(${zodiacSigns[zodiacIndex].constellationUrl})`;
+  }
+  window._cosmicBgImage = bgImage; // for debugging
+
   return (
-    <div
-      className={`min-h-screen bg-cover bg-center font-bahnschrift ${
-        theme === "dark" ? "text-white" : "text-black"
-      }`}
-     style={{
-        backgroundImage:
-          viewMode === "event"
-            ? `url(${background})`
-            : viewMode === "constellation"
-            ? `url("https://upload.wikimedia.org/wikipedia/commons/3/37/Constellations_equirectangular.png")`
-            : `url(${zodiacSigns[zodiacIndex].constellationUrl})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-      }}
-    >
-      <div className="p-4 bg-black bg-opacity-50 text-center">
-        <h1 className="text-3xl font-bold mb-4">Cosmic Calendar</h1>
-        <div className="space-x-2">
-          {["event", "constellation", "zodiac"].map((mode) => (
-            <button
-              key={mode}
-              onClick={() => setViewMode(mode)}
-              className={`px-4 py-2 rounded-full font-semibold capitalize ${
-                viewMode === mode
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-black"
-              }`}
-            >
-              {mode}
-            </button>
-          ))}
+    <>
+      <div
+        className={`min-h-screen bg-cover bg-center font-bahnschrift ${
+          theme === "dark" ? "text-white" : "text-black"
+        }`}
+        style={{
+          backgroundImage: bgImage,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      >
+        <div className="p-4 bg-black bg-opacity-50 text-center">
+          <h1 className="text-3xl font-bold mb-4">Cosmic Calendar</h1>
+          <div className="space-x-2">
+            {["event", "constellation", "zodiac"].map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setViewMode(mode)}
+                className={`px-4 py-2 rounded-full font-semibold capitalize ${
+                  viewMode === mode
+                    ? "bg-blue-600 text-white"
+                    : "bg-white text-black"
+                }`}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
+          {viewMode === "event" && (
+            <div className="p-4 md:flex md:space-x-8">
+              <div className="bg-black bg-opacity-60 p-4 rounded-lg mb-4 md:mb-0">
+                <Calendar onChange={setDate} value={date} />
+                <p className="mt-2">Selected Date: {date.toDateString()}</p>
+                <button
+                  className="mt-2 bg-white text-black px-2 py-1 rounded"
+                  onClick={() => setFactIndex((prev) => (prev + 1) % quizQuestions.length)}
+                >
+                  Next Fact
+                </button>
+              </div>
+              <div className="flex-1 bg-black bg-opacity-60 p-4 rounded-lg">
+                <h2 className="text-xl font-bold mb-2">
+                  {explanation ? explanation.split(".")[0] : "Loading..."}
+                </h2>
+                <p>{explanation}</p>
+              </div>
+            </div>
+          )}
+
+          {viewMode === "constellation" && (
+            <div className="w-full flex justify-center mt-8">
+              <iframe
+                title="Virtual Sky Constellation Viewer"
+                src={`https://virtualsky.lco.global/embed/index.html?longitude=77.6&latitude=12.9&constellations=true&cardinalpoints=true&clock=true&date=${date.toISOString()}`}
+                width="100%"
+                height="500"
+                frameBorder="0"
+                allowFullScreen
+                className="rounded-lg shadow-lg max-w-4xl"
+              ></iframe>
+            </div>
+          )}
+
+          {viewMode === "zodiac" && (
+            <div className="animate-fadeIn transition-all duration-500 text-center p-4 mt-8 bg-black bg-opacity-50 rounded-lg max-w-md mx-auto">
+              <div className="flex justify-between mb-4">
+                <button
+                  className="bg-white bg-opacity-30 px-3 py-1 rounded"
+                  onClick={() =>
+                    setZodiacIndex(
+                      (zodiacIndex - 1 + zodiacSigns.length) % zodiacSigns.length
+                    )
+                  }
+                >
+                  ◀️ Prev
+                </button>
+                <button
+                  className="bg-white bg-opacity-30 px-3 py-1 rounded"
+                  onClick={() =>
+                    setZodiacIndex((zodiacIndex + 1) % zodiacSigns.length)
+                  }
+                >
+                  Next ▶️
+                </button>
+              </div>
+              <h2 className="text-2xl font-bold mb-2">
+                {zodiacSigns[zodiacIndex].name} {zodiacSigns[zodiacIndex].symbol}
+              </h2>
+              <img
+                src={zodiacSigns[zodiacIndex].constellationUrl}
+                alt={`${zodiacSigns[zodiacIndex].name} Constellation`}
+                className="mx-auto w-full max-w-xs mb-4 rounded-lg shadow-md"
+              />
+              <p className="italic text-lg">{zodiacSigns[zodiacIndex].traits}</p>
+            </div>
+          )}
+
+          <div className="space-x-2 mt-4 text-center">
+            {["Quiz", "Bookmarks", "Countdown", "Share", "Settings"].map(
+              (btn) => (
+                <button
+                  key={btn}
+                  className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
+                  onClick={() => handlePanelToggle(btn)}
+                >
+                  {btn}
+                </button>
+              )
+            )}
+          </div>
         </div>
       </div>
-
-      {viewMode === "event" && (
-        <div className="p-4 md:flex md:space-x-8">
-          <div className="bg-black bg-opacity-60 p-4 rounded-lg mb-4 md:mb-0">
-            <Calendar onChange={setDate} value={date} />
-            <p className="mt-2">Selected Date: {date.toDateString()}</p>
-            <button
-              className="mt-2 bg-white text-black px-2 py-1 rounded"
-              onClick={() => setFactIndex((prev) => (prev + 1) % quizQuestions.length)}
-            >
-              Next Fact
-            </button>
+      <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-16 mt-8 gap-8">
+        {/* Left Column: Calendar, Date, Bookmark */}
+        <div className="flex flex-col items-start gap-4">
+          <div className={`${theme === 'light' ? 'light' : ''}`}>
+            <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
           </div>
-          <div className="flex-1 bg-black bg-opacity-60 p-4 rounded-lg">
-            <h2 className="text-xl font-bold mb-2">
-              {explanation ? explanation.split(".")[0] : "Loading..."}
-            </h2>
-            <p>{explanation}</p>
+
+          <div className={`px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+            <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
+          </div>
+
+          <button
+            onClick={addBookmark}
+            className={`px-3 py-1 rounded ${theme === 'dark' ? 'bg-black bg-opacity-40 text-white' : 'bg-white bg-opacity-40 text-black'}`}
+          >
+            Bookmark This Day
+          </button>
+        </div>
+
+        {/* Right Column: Fact Info */}
+        <div className={`flex-1 bg-opacity-60 p-6 rounded self-start ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`} style={{ minHeight: "400px" }}>
+          <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
+          <p>{explanation}</p>
+          <div className={`mt-4 p-3 rounded-lg ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+            <h3 className="text-lg font-semibold mb-2">Did You Know?</h3>
+            <p>{cosmicFacts[factIndex]}</p>
+            <button className="mt-2 bg-white bg-opacity-20 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
           </div>
         </div>
-      )}
-
+      </div>
       {viewMode === "constellation" && (
         <div className="w-full flex justify-center mt-8">
           <iframe
+            title="Virtual Sky Constellation Viewer 2"
             src={`https://virtualsky.lco.global/embed/index.html?longitude=77.6&latitude=12.9&constellations=true&cardinalpoints=true&clock=true&date=${date.toISOString()}`}
             width="100%"
             height="500"
@@ -367,340 +465,244 @@ useEffect(() => {
           ></iframe>
         </div>
       )}
-
-      {viewMode === "zodiac" && (
-        <div className="animate-fadeIn transition-all duration-500 text-center p-4 mt-8 bg-black bg-opacity-50 rounded-lg max-w-md mx-auto">
-          <div className="flex justify-between mb-4">
-            <button
-              className="bg-white bg-opacity-30 px-3 py-1 rounded"
-              onClick={() =>
-                setZodiacIndex(
-                  (zodiacIndex - 1 + zodiacSigns.length) % zodiacSigns.length
-                )
-              }
-            >
-              ◀️ Prev
-            </button>
-            <button
-              className="bg-white bg-opacity-30 px-3 py-1 rounded"
-              onClick={() =>
-                setZodiacIndex((zodiacIndex + 1) % zodiacSigns.length)
-              }
-            >
-              Next ▶️
-            </button>
+      {activePanel && (
+        <div ref={panelRef} className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-xl font-semibold">{activePanel}</h2>
+            <button onClick={() => setActivePanel('')}>✕</button>
           </div>
-          <h2 className="text-2xl font-bold mb-2">
-            {zodiacSigns[zodiacIndex].name} {zodiacSigns[zodiacIndex].symbol}
-          </h2>
-          <img
-            src={zodiacSigns[zodiacIndex].constellationUrl}
-            alt={`${zodiacSigns[zodiacIndex].name} Constellation`}
-            className="mx-auto w-full max-w-xs mb-4 rounded-lg shadow-md"
-          />
-          <p className="italic text-lg">{zodiacSigns[zodiacIndex].traits}</p>
+
+          {activePanel === 'Quiz' && (
+            <div className="animate-fadeIn transition-all duration-500">
+              {quizIndex >= quizQuestions.length ? (
+                <div className="text-center">
+                  <h3 className="text-2xl font-bold mb-4">Quiz Completed!</h3>
+                  <p className="text-lg mb-2">Your Score: {score} / {quizQuestions.length}</p>
+                  <button
+                    className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
+                    onClick={() => {
+                      setQuizIndex(0);
+                      setScore(0);
+                      setSelectedOption("");
+                      setFeedback("");
+                    }}
+                  >
+                    Restart Quiz
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <p className="font-semibold">Question {quizIndex + 1} of {quizQuestions.length}</p>
+                  <div className="w-full bg-gray-300 rounded-full h-2 mb-4">
+                    <div
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                      style={{ width: `${((quizIndex + 1) / quizQuestions.length) * 100}%` }}
+                    ></div>
+                  </div>
+                  <p className="mt-2">{quizQuestions[quizIndex].question}</p>
+                  <ul className="mt-2 space-y-1">
+                    {quizQuestions[quizIndex].options.map((opt) => (
+                      <li key={opt}>
+                        <label>
+                          <input
+                            type="radio"
+                            name="quiz"
+                            value={opt}
+                            checked={selectedOption === opt}
+                            onChange={(e) => setSelectedOption(e.target.value)}
+                          /> {opt}
+                        </label>
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
+                    onClick={handleQuizAnswer}
+                  >
+                    Submit Answer
+                  </button>
+
+                  {feedback && (
+                    <>
+                      <p className="mt-2">{feedback}</p>
+                      <button
+                        className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
+                        onClick={nextQuizQuestion}
+                      >
+                        Next Question
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+          {activePanel === 'Bookmarks' && (
+            <div className="animate-fadeIn transition-all duration-500">
+              {bookmarks.length === 0 ? (
+                <p>No bookmarks yet.</p>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    placeholder="Search bookmarks..."
+                    className="mb-2 p-1 rounded w-full text-black"
+                    value={userInput}
+                    onChange={(e) => setUserInput(e.target.value)}
+                  />
+                  <ul className="space-y-2">
+                    {bookmarks
+                      .filter((b) =>
+                        b.date.toLowerCase().includes(userInput.toLowerCase()) ||
+                        (b.summary && b.summary.toLowerCase().includes(userInput.toLowerCase()))
+                      )
+                      .map((b, i) => (
+                        <li
+                          key={b.date}
+                          className="flex justify-between items-center bg-white bg-opacity-20 p-2 rounded"
+                        >
+                          <div>
+                            <span className="font-semibold">{b.date}</span>
+                            {b.summary && (
+                              <span className={`ml-2 text-sm italic ${theme === "dark" ? "text-white/80" : "text-black/70"}`}>
+                                – {b.summary}
+                              </span>
+                            )}
+                          </div>
+                          <button
+                            onClick={() => {
+                              if (confirm("Delete this bookmark?")) deleteBookmark(i);
+                            }}
+                            className="text-red-500 hover:text-red-700"
+                          >
+                            ✕
+                          </button>
+                        </li>
+                      ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          )}
+
+          {activePanel === 'Countdown' && (
+            <div className="animate-fadeIn transition-all duration-500">
+              <input
+                type="datetime-local"
+                className="text-black p-1 rounded"
+                onChange={(e) => setCountdownDate(new Date(e.target.value))}
+              />
+              <p className="mt-2 text-lg">{timeLeft}</p>
+            </div>
+          )}
+
+          {activePanel === 'Share' && (
+            <div className="animate-fadeIn transition-all duration-500 space-y-2">
+              <button
+                className="bg-purple-500 text-white px-3 py-1 rounded w-full"
+                onClick={() => {
+                  const confirmed = window.confirm(
+                    "This image is sourced from NASA’s Astronomy Picture of the Day. Please credit NASA if shared or published."
+                  );
+                  if (confirmed) {
+                    const link = document.createElement("a");
+                    link.href = background;
+                    link.download = `cosmic-event-${date.toISOString().split("T")[0]}.jpg`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                  }
+                }}
+              >
+                📥 Download Image
+              </button>
+
+              <button
+                className="bg-blue-500 text-white px-3 py-1 rounded w-full"
+                onClick={() => navigator.clipboard.writeText(window.location.href)}
+              >
+                📋 Copy Link
+              </button>
+
+              <button
+                className="bg-green-600 text-white px-3 py-1 rounded w-full"
+                onClick={() =>
+                  window.open(
+                    `https://twitter.com/intent/tweet?text=Check out this cosmic event: ${window.location.href}`,
+                    "_blank"
+                  )
+                }
+              >
+                🐦 Share on Twitter
+              </button>
+
+              <button
+                className="bg-green-500 text-white px-3 py-1 rounded w-full"
+                onClick={() =>
+                  window.open(
+                    `https://wa.me/?text=Check out this cosmic event: ${encodeURIComponent(window.location.href)}`,
+                    "_blank"
+                  )
+                }
+              >
+                💬 Share on WhatsApp
+              </button>
+
+              <button
+                className="bg-blue-400 text-white px-3 py-1 rounded w-full"
+                onClick={() =>
+                  window.open(
+                    `sms:?body=Check out this cosmic event: ${window.location.href}`,
+                    "_blank"
+                  )
+                }
+              >
+                📱 Share via SMS
+              </button>
+
+              <button
+                className="bg-pink-500 text-white px-3 py-1 rounded w-full"
+                onClick={() =>
+                  window.open("https://www.instagram.com/", "_blank")
+                }
+              >
+                📸 Share on Instagram (via profile)
+              </button>
+            </div>
+          )}
+          {activePanel === 'Settings' && (
+            <div className="animate-fadeIn transition-all duration-500">
+              <button className="bg-white bg-opacity-30 px-3 py-1 rounded" onClick={toggleTheme}>Toggle Theme</button>
+            </div>
+          )}
         </div>
       )}
 
-          {["Quiz", "Bookmarks", "Countdown", "Share", "Settings"].map(
-            (btn) => (
-              <button
-                key={btn}
-                className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
-                onClick={() => handlePanelToggle(btn)}
-              >
-                {btn}
-              </button>
-            )
-          )}
-        </div>
+      <div className="fixed bottom-4 right-4">
+        <button className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700" onClick={() => setShowChat(!showChat)}>💬</button>
       </div>
-    </div>
-  );
 
-
-      </div>
-     <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-16 mt-8 gap-8">
-  {/* Left Column: Calendar, Date, Bookmark */}
-  <div className="flex flex-col items-start gap-4">
-    <div className={`${theme === 'light' ? 'light' : ''}`}>
-      <Calendar onChange={setDate} value={date} className="rounded-lg shadow-lg" />
-    </div>
-
-    <div className={`px-4 py-2 rounded shadow-md ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-      <p className="text-lg font-medium">Selected Date: {date.toDateString()}</p>
-    </div>
-
-    <button
-      onClick={addBookmark}
-      className={`px-3 py-1 rounded ${theme === 'dark' ? 'bg-black bg-opacity-40 text-white' : 'bg-white bg-opacity-40 text-black'}`}
-    >
-      Bookmark This Day
-    </button>
-  </div>
-
-  {/* Right Column: Fact Info */}
-  <div className={`flex-1 bg-opacity-60 p-6 rounded self-start ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`} style={{ minHeight: "400px" }}>
-    <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
-    <p>{explanation}</p>
-    <div className={`mt-4 p-3 rounded-lg ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-  <h3 className="text-lg font-semibold mb-2">Did You Know?</h3>
-  <p>{cosmicFacts[factIndex]}</p>
-  <button className="mt-2 bg-white bg-opacity-20 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
-</div>
-  </div>
-</div>
-{viewMode === "constellation" && (
-  <div className="w-full flex justify-center mt-8">
-    <iframe
-      src={`https://virtualsky.lco.global/embed/index.html?longitude=77.6&latitude=12.9&constellations=true&cardinalpoints=true&clock=true&date=${date.toISOString()}`}
-      width="100%"
-      height="500"
-      frameBorder="0"
-      allowFullScreen
-      className="rounded-lg shadow-lg max-w-4xl"
-    ></iframe>
-  </div>
-)}
-        {activePanel && (
-          <div ref={panelRef} className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-xl font-semibold">{activePanel}</h2>
-              <button onClick={() => setActivePanel('')}>✕</button>
-            </div>
-
-            {activePanel === 'Quiz' && (
-              <div className="animate-fadeIn transition-all duration-500">
-                {quizIndex >= quizQuestions.length ? (
-                  <div className="text-center">
-                    <h3 className="text-2xl font-bold mb-4">Quiz Completed!</h3>
-                    <p className="text-lg mb-2">Your Score: {score} / {quizQuestions.length}</p>
-                    <button
-                      className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
-                      onClick={() => {
-                        setQuizIndex(0);
-                        setScore(0);
-                        setSelectedOption("");
-                        setFeedback("");
-                      }}
-                    >
-                      Restart Quiz
-                    </button>
-                  </div>
-                ) : (
-                  <div>
-                    <p className="font-semibold">Question {quizIndex + 1} of {quizQuestions.length}</p>
-                    <div className="w-full bg-gray-300 rounded-full h-2 mb-4">
-                      <div
-                        className="bg-blue-500 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${((quizIndex + 1) / quizQuestions.length) * 100}%` }}
-                      ></div>
-                    </div>
-                    <p className="mt-2">{quizQuestions[quizIndex].question}</p>
-                    <ul className="mt-2 space-y-1">
-                      {quizQuestions[quizIndex].options.map((opt, idx) => (
-                        <li key={idx}>
-                          <label>
-                            <input
-                              type="radio"
-                              name="quiz"
-                              value={opt}
-                              checked={selectedOption === opt}
-                              onChange={(e) => setSelectedOption(e.target.value)}
-                            /> {opt}
-                          </label>
-                        </li>
-                      ))}
-                    </ul>
-                    <button
-  className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
-  onClick={handleQuizAnswer}
->
-  Submit Answer
-</button>
-
-{feedback && (
-  <>
-    <p className="mt-2">{feedback}</p>
-    <button
-      className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
-      onClick={nextQuizQuestion}
-    >
-      Next Question
-    </button>
-  </>
-)}
-                  </div>
-                )}
-              </div>
-            )}
-            {activePanel === 'Bookmarks' && (
-  <div className="animate-fadeIn transition-all duration-500">
-    {bookmarks.length === 0 ? (
-      <p>No bookmarks yet.</p>
-    ) : (
-      <>
-        <input
-          type="text"
-          placeholder="Search bookmarks..."
-          className="mb-2 p-1 rounded w-full text-black"
-          value={userInput}
-          onChange={(e) => setUserInput(e.target.value)}
-        />
-        <ul className="space-y-2">
-  {bookmarks
-.filter((b) =>
-  b.date.toLowerCase().includes(userInput.toLowerCase()) ||
-  (b.summary && b.summary.toLowerCase().includes(userInput.toLowerCase()))
-)
-    .map((b, i) => (
-      <li
-        key={i}
-        className="flex justify-between items-center bg-white bg-opacity-20 p-2 rounded"
-      >
-        <div>
-          <span className="font-semibold">{b.date}</span>
-          {b.summary && (
-            <span className={`ml-2 text-sm italic ${theme === "dark" ? "text-white/80" : "text-black/70"}`}>
-  – {b.summary}
-</span>
-          )}
-        </div>
-        <button
-          onClick={() => {
-  if (confirm("Delete this bookmark?")) deleteBookmark(i);
-}}
-          className="text-red-500 hover:text-red-700"
-        >
-          ✕
-        </button>
-      </li>
-    ))}
-</ul>
-
-      </>
-    )}
-  </div>
-)}
-
-            {activePanel === 'Countdown' && (
-              <div className="animate-fadeIn transition-all duration-500">
-                <input
-                  type="datetime-local"
-                  className="text-black p-1 rounded"
-                  onChange={(e) => setCountdownDate(new Date(e.target.value))}
-                />
-                <p className="mt-2 text-lg">{timeLeft}</p>
-              </div>
-            )}
-
-          {activePanel === 'Share' && (
-  <div className="animate-fadeIn transition-all duration-500 space-y-2">
-    <button
-      className="bg-purple-500 text-white px-3 py-1 rounded w-full"
-      onClick={() => {
-        const confirmed = window.confirm(
-          "This image is sourced from NASA’s Astronomy Picture of the Day. Please credit NASA if shared or published."
-        );
-        if (confirmed) {
-          const link = document.createElement("a");
-          link.href = background;
-          link.download = `cosmic-event-${date.toISOString().split("T")[0]}.jpg`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        }
-      }}
-    >
-      📥 Download Image
-    </button>
-
-    <button
-      className="bg-blue-500 text-white px-3 py-1 rounded w-full"
-      onClick={() => navigator.clipboard.writeText(window.location.href)}
-    >
-      📋 Copy Link
-    </button>
-
-    <button
-      className="bg-green-600 text-white px-3 py-1 rounded w-full"
-      onClick={() =>
-        window.open(
-          `https://twitter.com/intent/tweet?text=Check out this cosmic event: ${window.location.href}`,
-          "_blank"
-        )
-      }
-    >
-      🐦 Share on Twitter
-    </button>
-
-    <button
-      className="bg-green-500 text-white px-3 py-1 rounded w-full"
-      onClick={() =>
-        window.open(
-          `https://wa.me/?text=Check out this cosmic event: ${encodeURIComponent(window.location.href)}`,
-          "_blank"
-        )
-      }
-    >
-      💬 Share on WhatsApp
-    </button>
-
-    <button
-      className="bg-blue-400 text-white px-3 py-1 rounded w-full"
-      onClick={() =>
-        window.open(
-          `sms:?body=Check out this cosmic event: ${window.location.href}`,
-          "_blank"
-        )
-      }
-    >
-      📱 Share via SMS
-    </button>
-
-    <button
-      className="bg-pink-500 text-white px-3 py-1 rounded w-full"
-      onClick={() =>
-        window.open("https://www.instagram.com/", "_blank")
-      }
-    >
-      📸 Share on Instagram (via profile)
-    </button>
-  </div>
-)}
-            {activePanel === 'Settings' && (
-              <div className="animate-fadeIn transition-all duration-500">
-                <button className="bg-white bg-opacity-30 px-3 py-1 rounded" onClick={toggleTheme}>Toggle Theme</button>
-              </div>
-            )}
+      {showChat && (
+        <div ref={chatRef} className="fixed bottom-20 right-4 bg-black bg-opacity-80 p-4 rounded-lg w-72 text-white">
+          <div className="flex justify-between items-center mb-2">
+            <h2 className="text-lg font-semibold">Chatbot</h2>
+            <button onClick={() => setShowChat(false)}>✕</button>
           </div>
-        )}
-
-        <div className="fixed bottom-4 right-4">
-          <button className="bg-blue-600 text-white rounded-full p-3 shadow-lg hover:bg-blue-700" onClick={() => setShowChat(!showChat)}>💬</button>
+          <input
+            className="w-full p-2 rounded text-black"
+            placeholder="Ask something about space..."
+            value={userInput}
+            onChange={(e) => setUserInput(e.target.value)}
+          />
+          <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={fetchAIResponse}>Submit</button>
+          <p className="mt-2">{aiResponse}</p>
         </div>
+      )}
 
-        {showChat && (
-          <div ref={chatRef} className="fixed bottom-20 right-4 bg-black bg-opacity-80 p-4 rounded-lg w-72 text-white">
-            <div className="flex justify-between items-center mb-2">
-              <h2 className="text-lg font-semibold">Chatbot</h2>
-              <button onClick={() => setShowChat(false)}>✕</button>
-            </div>
-            <input
-              className="w-full p-2 rounded text-black"
-              placeholder="Ask something about space..."
-              value={userInput}
-              onChange={(e) => setUserInput(e.target.value)}
-            />
-            <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={fetchAIResponse}>Submit</button>
-            <p className="mt-2">{aiResponse}</p>
-          </div>
-        )}
-    
-     <Analytics />
+      <Analytics />
       <SpeedInsights />
-    </div>
+    </>
   );
-};
+}
 
 export default App;
