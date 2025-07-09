@@ -5,10 +5,6 @@ import { Client } from "@gradio/client";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
-const App = () => {
-  const panelRef = useRef(null);  // ✅ Move inside
-  const chatRef = useRef(null);   // ✅ Move inside
-
 const quizQuestions = [
   { question: "What is the age of the universe?", options: ["13.8 billion years", "4.5 billion years", "10 million years"], answer: "13.8 billion years" },
   { question: "Which galaxy do we live in?", options: ["Andromeda", "Milky Way", "Whirlpool"], answer: "Milky Way" },
@@ -57,6 +53,8 @@ const cosmicFacts = [
 
 const App = () => {
   const [date, setDate] = useState(new Date());
+   const panelRef = useRef(null);  // ✅ Move inside
+  const chatRef = useRef(null);   // ✅ Move inside
   const [background, setBackground] = useState("");
   const [explanation, setExplanation] = useState("");
   const [activePanel, setActivePanel] = useState("");
