@@ -147,7 +147,19 @@ const App = () => {
   const [feedback, setFeedback] = useState("");
   const [score, setScore] = useState(0);
   const [theme, setTheme] = useState("dark");
-  const [showChat, setShowChat] = useState(false);
+
+// Load theme from localStorage when app starts
+useEffect(() => {
+  const saved = localStorage.getItem("cosmicTheme");
+  if (saved) setTheme(saved);
+}, []);
+
+// Save theme to localStorage when it changes
+useEffect(() => {
+  localStorage.setItem("cosmicTheme", theme);
+}, [theme]);
+
+    const [showChat, setShowChat] = useState(false);
   const [countdownDate, setCountdownDate] = useState(new Date(Date.now() + 1000 * 60 * 60 * 24)); // default 1 day later
   const [timeLeft, setTimeLeft] = useState("");
 
@@ -409,9 +421,24 @@ useEffect(() => {
                         </li>
                       ))}
                     </ul>
-                    <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={handleQuizAnswer}>Submit Answer</button>
-                    <p className="mt-2">{feedback}</p>
-                    <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={nextQuizQuestion}>Next Question</button>
+                    <button
+  className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
+  onClick={handleQuizAnswer}
+>
+  Submit Answer
+</button>
+
+{feedback && (
+  <>
+    <p className="mt-2">{feedback}</p>
+    <button
+      className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
+      onClick={nextQuizQuestion}
+    >
+      Next Question
+    </button>
+  </>
+)}
                   </div>
                 )}
               </div>
