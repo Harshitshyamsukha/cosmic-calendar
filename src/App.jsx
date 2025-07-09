@@ -4,6 +4,7 @@ import "react-calendar/dist/Calendar.css";
 import { Client } from "@gradio/client"; 
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const quizQuestions = [
   { question: "What is the age of the universe?", options: ["13.8 billion years", "4.5 billion years", "10 million years"], answer: "13.8 billion years" },
@@ -303,19 +304,36 @@ useEffect(() => {
   className={`min-h-screen bg-cover bg-center font-bahnschrift ${
     theme === "dark" ? "text-white" : "text-black"
   }`}
-  style={{
-    backgroundImage: viewMode === "event" ? `url(${background})` : "none",
-  }}
->
+ style={{
+  backgroundImage:
+    viewMode === "event"
+      ? `url(${background})`
+      : viewMode === "constellation"
+      ? `url("https://upload.wikimedia.org/wikipedia/commons/3/37/Constellations_equirectangular.png")` // general star map
+      : `url(${zodiacSigns[zodiacIndex].constellationUrl})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+}}
+
       <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-30 text-black"}`}>
         <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
      <div className="space-x-2">
-  <button
-    className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
-    onClick={() => setViewMode(viewMode === "event" ? "constellation" : "event")}
-  >
-    {viewMode === "event" ? "Show Constellation" : "Show Event"}
-  </button>
+<div className="flex space-x-2 mb-2 justify-center">
+  {["event", "constellation", "zodiac"].map((mode) => (
+    <button
+      key={mode}
+      onClick={() => setViewMode(mode)}
+      className={`px-4 py-2 rounded-full font-semibold capitalize transition-all duration-300 ${
+        viewMode === mode
+          ? "bg-blue-600 text-white scale-105 shadow-lg"
+          : "bg-white bg-opacity-20 hover:bg-opacity-40"
+      }`}
+    >
+      {mode}
+    </button>
+  ))}
+</div>
+
   {["Quiz", "Bookmarks", "Countdown", "Share", "Zodiac", "Settings" ].map((btn) => (
     <button
       key={btn}
