@@ -55,6 +55,7 @@ const App = () => {
   const [date, setDate] = useState(new Date());
    const panelRef = useRef(null);  // ✅ Move inside
   const chatRef = useRef(null);   // ✅ Move inside
+  const [viewMode, setViewMode] = useState("event"); // "event" or "constellation"
   const [background, setBackground] = useState("");
   const [explanation, setExplanation] = useState("");
   const [activePanel, setActivePanel] = useState("");
@@ -210,20 +211,35 @@ useEffect(() => {
   }, [countdownDate]);
 
   return (
-    <div className={`min-h-screen bg-cover bg-center font-bahnschrift ${theme === "dark" ? "text-white" : "text-black"}`} style={{ backgroundImage: `url(${background})` }}>
+    <div
+  className={`min-h-screen bg-cover bg-center font-bahnschrift ${
+    theme === "dark" ? "text-white" : "text-black"
+  }`}
+  style={{
+    backgroundImage: viewMode === "event" ? `url(${background})` : "none",
+  }}
+>
       <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-30 text-black"}`}>
         <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
-        <div className="space-x-2">
-          {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
-            <button
-              key={btn}
-              className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
-              onClick={() => handlePanelToggle(btn)}
-            >
-              {btn}
-            </button>
-          ))}
-        </div>
+     <div className="space-x-2">
+  <button
+    className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
+    onClick={() => setViewMode(viewMode === "event" ? "constellation" : "event")}
+  >
+    {viewMode === "event" ? "Show Constellation" : "Show Event"}
+  </button>
+
+  {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
+    <button
+      key={btn}
+      className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
+      onClick={() => handlePanelToggle(btn)}
+    >
+      {btn}
+    </button>
+  ))}
+</div>
+
       </div>
      <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-16 mt-8 gap-8">
   {/* Left Column: Calendar, Date, Bookmark */}
@@ -250,8 +266,18 @@ useEffect(() => {
     <p>{explanation}</p>
   </div>
 </div>
-
-
+{viewMode === "constellation" && (
+  <div className="w-full flex justify-center mt-8">
+    <iframe
+      src={`https://virtualsky.lco.global/embed/index.html?longitude=77.6&latitude=12.9&constellations=true&cardinalpoints=true&clock=true&date=${date.toISOString()}`}
+      width="100%"
+      height="500"
+      frameBorder="0"
+      allowFullScreen
+      className="rounded-lg shadow-lg max-w-4xl"
+    ></iframe>
+  </div>
+)}
         {activePanel && (
           <div ref={panelRef} className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
             <div className="flex justify-between items-center mb-2">
