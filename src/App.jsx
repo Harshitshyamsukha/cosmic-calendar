@@ -300,7 +300,9 @@ const addBookmark = () => {
         <div>
           <span className="font-semibold">{b.date}</span>
           {b.summary && (
-            <span className="ml-2 text-sm italic text-white/80">– {b.summary}</span>
+            <span className={`ml-2 text-sm italic ${theme === "dark" ? "text-white/80" : "text-black/70"}`}>
+  – {b.summary}
+</span>
           )}
         </div>
         <button
