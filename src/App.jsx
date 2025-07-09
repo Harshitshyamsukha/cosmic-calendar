@@ -504,11 +504,57 @@ useEffect(() => {
             )}
 
             {activePanel === 'Share' && (
-              <div className="animate-fadeIn transition-all duration-500">
-                <button className="bg-blue-500 text-white px-3 py-1 rounded mr-2" onClick={() => navigator.clipboard.writeText(window.location.href)}>Copy Link</button>
-                <button className="bg-green-500 text-white px-3 py-1 rounded" onClick={() => window.open(`https://twitter.com/intent/tweet?text=Check out this cosmic event: ${window.location.href}`, '_blank')}>Share on Twitter</button>
-              </div>
-            )}
+  <div className="animate-fadeIn transition-all duration-500 space-y-2">
+    <button
+      className="bg-blue-500 text-white px-3 py-1 rounded w-full"
+      onClick={() => navigator.clipboard.writeText(window.location.href)}
+    >
+      📋 Copy Link
+    </button>
+    <button
+      className="bg-green-600 text-white px-3 py-1 rounded w-full"
+      onClick={() =>
+        window.open(
+          `https://twitter.com/intent/tweet?text=Check out this cosmic event: ${window.location.href}`,
+          "_blank"
+        )
+      }
+    >
+      🐦 Share on Twitter
+    </button>
+    <button
+      className="bg-green-500 text-white px-3 py-1 rounded w-full"
+      onClick={() =>
+        window.open(
+          `https://wa.me/?text=Check out this cosmic event: ${encodeURIComponent(window.location.href)}`,
+          "_blank"
+        )
+      }
+    >
+      💬 Share on WhatsApp
+    </button>
+    <button
+      className="bg-blue-400 text-white px-3 py-1 rounded w-full"
+      onClick={() =>
+        window.open(
+          `sms:?body=Check out this cosmic event: ${window.location.href}`,
+          "_blank"
+        )
+      }
+    >
+      📱 Share via SMS
+    </button>
+    <button
+      className="bg-pink-500 text-white px-3 py-1 rounded w-full"
+      onClick={() =>
+        window.open("https://www.instagram.com/", "_blank")
+      }
+    >
+      📸 Share on Instagram (via profile)
+    </button>
+  </div>
+)}
+
 
             {activePanel === 'Fact' && (
               <div className="animate-fadeIn transition-all duration-500">
