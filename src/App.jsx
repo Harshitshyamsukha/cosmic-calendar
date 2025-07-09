@@ -28,9 +28,6 @@ const quizQuestions = [
   { question: "What is the farthest planet from the Sun?", options: ["Neptune", "Uranus", "Pluto"], answer: "Neptune" }
 ];
 
-const [dailyFact, setDailyFact] = useState("");
-const [dailyQuiz, setDailyQuiz] = useState(null);
-
 const cosmicFacts = [
   "The universe is 13.8 billion years old.",
   "There are more stars in the universe than grains of sand on Earth.",
@@ -76,28 +73,18 @@ const App = () => {
   const [timeLeft, setTimeLeft] = useState("");
 
   const fetchBackground = async (selectedDate) => {
-  const formattedDate = selectedDate.toISOString().split("T")[0];
-  try {
-    const response = await fetch(
-      `https://api.nasa.gov/planetary/apod?api_key=${import.meta.env.VITE_NASA_API_KEY}&date=${formattedDate}`
-    );
-    const data = await response.json();
-    setBackground(data.url);
-    setExplanation(data.explanation);
-
-    // 🎯 Tie fact and quiz to date
-    const dateKey = selectedDate.toDateString();
-    const hash = [...dateKey].reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    setDailyFact(cosmicFacts[hash % cosmicFacts.length]);
-    setDailyQuiz(quizQuestions[hash % quizQuestions.length]);
-
-  } catch {
-    setExplanation("No event data available for this date.");
-    setDailyFact("No fact available.");
-    setDailyQuiz(null);
-  }
-};
-
+    const formattedDate = selectedDate.toISOString().split("T")[0];
+    try {
+      const response = await fetch(
+        `https://api.nasa.gov/planetary/apod?api_key=${import.meta.env.VITE_NASA_API_KEY}&date=${formattedDate}`
+      );
+      const data = await response.json();
+      setBackground(data.url);
+      setExplanation(data.explanation);
+    } catch {
+      setExplanation("No event data available for this date.");
+    }
+  };
 
 const fetchAIResponse = async () => {
   try {
@@ -142,15 +129,14 @@ const addBookmark = () => {
   };
 
   const handleQuizAnswer = () => {
-  if (!dailyQuiz || feedback) return; // prevent multiple submissions or missing quiz
-
-  if (selectedOption === dailyQuiz.answer) {
-    setFeedback("✅ Correct!");
-  } else {
-    setFeedback(`❌ Incorrect. Correct answer: ${dailyQuiz.answer}`);
-  }
-};
-
+    const currentQuestion = quizQuestions[quizIndex];
+    if (selectedOption === currentQuestion.answer) {
+      setFeedback("Correct!");
+      setScore(score + 1);
+    } else {
+      setFeedback("Incorrect.");
+    }
+  };
 
   const nextQuizQuestion = () => {
     setQuizIndex((prev) => (prev + 1) % quizQuestions.length);
@@ -231,63 +217,62 @@ const addBookmark = () => {
 
 
         {activePanel && (
-          <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-60 text-black"}`}>
+          <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-xl font-semibold">{activePanel}</h2>
               <button onClick={() => setActivePanel('')}>✕</button>
             </div>
 
-    {activePanel === 'Quiz' && (
-  <div className="animate-fadeIn transition-all duration-500">
-    {dailyQuiz ? (
-      <div>
-        <p className="font-semibold mb-2">Quiz for {date.toDateString()}</p>
-        <p className="mt-2 font-medium">{dailyQuiz.question}</p>
-        <ul className="mt-2 space-y-1">
-          {dailyQuiz.options.map((opt, idx) => (
-            <li key={idx}>
-              <label>
-                <input
-                  type="radio"
-                  name="quiz"
-                  value={opt}
-                  checked={selectedOption === opt}
-                  onChange={(e) => setSelectedOption(e.target.value)}
-                />{" "}
-                {opt}
-              </label>
-            </li>
-          ))}
-        </ul>
-
-        {!feedback ? (
-          <button
-            className="mt-3 bg-white bg-opacity-30 px-3 py-1 rounded"
-            onClick={handleQuizAnswer}
-          >
-            Submit Answer
-          </button>
-        ) : (
-          <div className="mt-3">
-            <p className="mb-2">{feedback}</p>
-            <button
-              className="bg-white bg-opacity-30 px-3 py-1 rounded"
-              onClick={() => {
-                setFeedback("");
-                setSelectedOption("");
-              }}
-            >
-              Try Again
-            </button>
-          </div>
-        )}
-      </div>
-    ) : (
-      <p>No quiz available for this date.</p>
-    )}
-  </div>
-)}
-
+            {activePanel === 'Quiz' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                {quizIndex >= quizQuestions.length ? (
+                  <div className="text-center">
+                    <h3 className="text-2xl font-bold mb-4">Quiz Completed!</h3>
+                    <p className="text-lg mb-2">Your Score: {score} / {quizQuestions.length}</p>
+                    <button
+                      className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded"
+                      onClick={() => {
+                        setQuizIndex(0);
+                        setScore(0);
+                        setSelectedOption("");
+                        setFeedback("");
+                      }}
+                    >
+                      Restart Quiz
+                    </button>
+                  </div>
+                ) : (
+                  <div>
+                    <p className="font-semibold">Question {quizIndex + 1} of {quizQuestions.length}</p>
+                    <div className="w-full bg-gray-300 rounded-full h-2 mb-4">
+                      <div
+                        className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                        style={{ width: `${((quizIndex + 1) / quizQuestions.length) * 100}%` }}
+                      ></div>
+                    </div>
+                    <p className="mt-2">{quizQuestions[quizIndex].question}</p>
+                    <ul className="mt-2 space-y-1">
+                      {quizQuestions[quizIndex].options.map((opt, idx) => (
+                        <li key={idx}>
+                          <label>
+                            <input
+                              type="radio"
+                              name="quiz"
+                              value={opt}
+                              checked={selectedOption === opt}
+                              onChange={(e) => setSelectedOption(e.target.value)}
+                            /> {opt}
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                    <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={handleQuizAnswer}>Submit Answer</button>
+                    <p className="mt-2">{feedback}</p>
+                    <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={nextQuizQuestion}>Next Question</button>
+                  </div>
+                )}
+              </div>
+            )}
             {activePanel === 'Bookmarks' && (
   <div className="animate-fadeIn transition-all duration-500">
     {bookmarks.length === 0 ? (
@@ -355,12 +340,12 @@ const addBookmark = () => {
               </div>
             )}
 
-           {activePanel === 'Fact' && (
-  <div className="animate-fadeIn transition-all duration-500">
-    <p>{dailyFact}</p>
-    <p className="mt-2 text-sm italic text-white/70">Tied to {date.toDateString()}</p>
-  </div>
-)}
+            {activePanel === 'Fact' && (
+              <div className="animate-fadeIn transition-all duration-500">
+                <p>{cosmicFacts[factIndex]}</p>
+                <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
+              </div>
+            )}
 
             {activePanel === 'Settings' && (
               <div className="animate-fadeIn transition-all duration-500">
