@@ -100,8 +100,7 @@ const fetchAIResponse = async () => {
     setAiResponse("Error fetching AI response.");
   }
 };
-
-
+  
 const addBookmark = () => {
   const dateString = date.toDateString();
   const alreadyBookmarked = bookmarks.some((b) => b.date === dateString);
@@ -111,7 +110,7 @@ const addBookmark = () => {
     return;
   }
 
-  const newBookmarks = [...bookmarks, { date: dateString, background }];
+  const newBookmarks = [...bookmarks, { date: dateString, background, summary  }];
   setBookmarks(newBookmarks);
   localStorage.setItem("cosmicBookmarks", JSON.stringify(newBookmarks));
 };
@@ -284,20 +283,29 @@ const addBookmark = () => {
           onChange={(e) => setUserInput(e.target.value)}
         />
         <ul className="space-y-2">
-          {bookmarks
-            .filter((b) => b.date.toLowerCase().includes(userInput.toLowerCase()))
-            .map((b, i) => (
-              <li key={i} className="flex justify-between items-center bg-white bg-opacity-20 p-2 rounded">
-                <span>{b.date}</span>
-                <button
-                  onClick={() => deleteBookmark(i)}
-                  className="text-red-500 hover:text-red-700"
-                >
-                  ✕
-                </button>
-              </li>
-            ))}
-        </ul>
+  {bookmarks
+    .filter((b) => b.date.toLowerCase().includes(userInput.toLowerCase()))
+    .map((b, i) => (
+      <li
+        key={i}
+        className="flex justify-between items-center bg-white bg-opacity-20 p-2 rounded"
+      >
+        <div>
+          <span className="font-semibold">{b.date}</span>
+          {b.summary && (
+            <span className="ml-2 text-sm italic text-white/80">– {b.summary}</span>
+          )}
+        </div>
+        <button
+          onClick={() => deleteBookmark(i)}
+          className="text-red-500 hover:text-red-700"
+        >
+          ✕
+        </button>
+      </li>
+    ))}
+</ul>
+
       </>
     )}
   </div>
