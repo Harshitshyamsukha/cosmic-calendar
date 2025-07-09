@@ -508,13 +508,14 @@ useEffect(() => {
               </div>
             )}
 
-            {activePanel === 'Share' && (
+          {activePanel === 'Share' && (
   <div className="animate-fadeIn transition-all duration-500 space-y-2">
     <button
-      className="bg-blue-500 text-white px-3 py-1 rounded w-full"
-      className="bg-purple-500 text-white px-3 py-1 rounded mt-2"
+      className="bg-purple-500 text-white px-3 py-1 rounded w-full"
       onClick={() => {
-        const confirmed = window.confirm("This image is sourced from NASA’s Astronomy Picture of the Day. Please credit NASA if shared or published.");
+        const confirmed = window.confirm(
+          "This image is sourced from NASA’s Astronomy Picture of the Day. Please credit NASA if shared or published."
+        );
         if (confirmed) {
           const link = document.createElement("a");
           link.href = background;
@@ -525,12 +526,16 @@ useEffect(() => {
         }
       }}
     >
-      Download Image
-  </div>
-)}
+      📥 Download Image
+    </button>
+
+    <button
+      className="bg-blue-500 text-white px-3 py-1 rounded w-full"
+      onClick={() => navigator.clipboard.writeText(window.location.href)}
     >
       📋 Copy Link
     </button>
+
     <button
       className="bg-green-600 text-white px-3 py-1 rounded w-full"
       onClick={() =>
@@ -542,6 +547,7 @@ useEffect(() => {
     >
       🐦 Share on Twitter
     </button>
+
     <button
       className="bg-green-500 text-white px-3 py-1 rounded w-full"
       onClick={() =>
@@ -553,6 +559,7 @@ useEffect(() => {
     >
       💬 Share on WhatsApp
     </button>
+
     <button
       className="bg-blue-400 text-white px-3 py-1 rounded w-full"
       onClick={() =>
@@ -564,6 +571,7 @@ useEffect(() => {
     >
       📱 Share via SMS
     </button>
+
     <button
       className="bg-pink-500 text-white px-3 py-1 rounded w-full"
       onClick={() =>
@@ -574,7 +582,6 @@ useEffect(() => {
     </button>
   </div>
 )}
-
 
             {activePanel === 'Fact' && (
               <div className="animate-fadeIn transition-all duration-500">
