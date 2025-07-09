@@ -110,6 +110,14 @@ const addBookmark = () => {
     return;
   }
 
+  // 🧠 Extract summary safely
+  const summary = explanation?.split(".")[0] || "No summary available";
+
+  const newBookmarks = [...bookmarks, { date: dateString, background, summary }];
+  setBookmarks(newBookmarks);
+  localStorage.setItem("cosmicBookmarks", JSON.stringify(newBookmarks));
+};
+
   const newBookmarks = [...bookmarks, { date: dateString, background, summary  }];
   setBookmarks(newBookmarks);
   localStorage.setItem("cosmicBookmarks", JSON.stringify(newBookmarks));
