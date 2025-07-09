@@ -288,7 +288,10 @@ const addBookmark = () => {
         />
         <ul className="space-y-2">
   {bookmarks
-    .filter((b) => b.date.toLowerCase().includes(userInput.toLowerCase()))
+.filter((b) =>
+  b.date.toLowerCase().includes(userInput.toLowerCase()) ||
+  (b.summary && b.summary.toLowerCase().includes(userInput.toLowerCase()))
+)
     .map((b, i) => (
       <li
         key={i}
@@ -301,7 +304,9 @@ const addBookmark = () => {
           )}
         </div>
         <button
-          onClick={() => deleteBookmark(i)}
+          onClick={() => {
+  if (confirm("Delete this bookmark?")) deleteBookmark(i);
+}}
           className="text-red-500 hover:text-red-700"
         >
           ✕
