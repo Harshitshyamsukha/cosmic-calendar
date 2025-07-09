@@ -354,7 +354,7 @@ useEffect(() => {
   </div>
 
   {/* Right Column: Fact Info */}
-  <div className={`flex-1 max-w-2xl bg-opacity-60 p-4 rounded self-start ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`}>
+  <div className={`flex-1 bg-opacity-60 p-6 rounded self-start ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`}>
     <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
     <p>{explanation}</p>
   </div>
