@@ -118,10 +118,6 @@ const addBookmark = () => {
   localStorage.setItem("cosmicBookmarks", JSON.stringify(newBookmarks));
 };
 
-  const newBookmarks = [...bookmarks, { date: dateString, background, summary  }];
-  setBookmarks(newBookmarks);
-  localStorage.setItem("cosmicBookmarks", JSON.stringify(newBookmarks));
-};
   const deleteBookmark = (index) => {
   const updated = bookmarks.filter((_, i) => i !== index);
   setBookmarks(updated);
