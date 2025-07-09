@@ -322,7 +322,7 @@ useEffect(() => {
   >
     Zodiac
   </button>
-  {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Zodiac", "Settings" ].map((btn) => (
+  {["Quiz", "Bookmarks", "Countdown", "Share", "Zodiac", "Settings" ].map((btn) => (
     <button
       key={btn}
       className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
@@ -357,6 +357,11 @@ useEffect(() => {
   <div className={`flex-1 bg-opacity-60 p-6 rounded self-start ${theme === "dark" ? "bg-black text-white" : "bg-white text-black"}`} style={{ minHeight: "400px" }}>
     <h2 className="text-xl font-semibold mb-2">{explanation ? explanation.split(".")[0] : "Loading..."}</h2>
     <p>{explanation}</p>
+    <div className={`mt-4 p-3 rounded-lg ${theme === "dark" ? "bg-black bg-opacity-60 text-white" : "bg-white bg-opacity-30 text-black"}`}>
+  <h3 className="text-lg font-semibold mb-2">Did You Know?</h3>
+  <p>{cosmicFacts[factIndex]}</p>
+  <button className="mt-2 bg-white bg-opacity-20 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
+</div>
   </div>
 </div>
 {viewMode === "constellation" && (
@@ -507,7 +512,22 @@ useEffect(() => {
   <div className="animate-fadeIn transition-all duration-500 space-y-2">
     <button
       className="bg-blue-500 text-white px-3 py-1 rounded w-full"
-      onClick={() => navigator.clipboard.writeText(window.location.href)}
+      className="bg-purple-500 text-white px-3 py-1 rounded mt-2"
+      onClick={() => {
+        const confirmed = window.confirm("This image is sourced from NASA’s Astronomy Picture of the Day. Please credit NASA if shared or published.");
+        if (confirmed) {
+          const link = document.createElement("a");
+          link.href = background;
+          link.download = `cosmic-event-${date.toISOString().split("T")[0]}.jpg`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      }}
+    >
+      Download Image
+  </div>
+)}
     >
       📋 Copy Link
     </button>
