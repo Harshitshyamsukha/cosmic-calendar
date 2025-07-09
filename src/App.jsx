@@ -498,16 +498,10 @@ useEffect(() => {
       >
         ◀️ Prev
       </button>
-      <button
-        className="bg-white bg-opacity-30 px-3 py-1 rounded"
-        onClick={() => setActivePanel("")}
-      >
-        🏠 Home
-      </button>
-      <button
-        className="bg-white bg-opacity-30 px-3 py-1 rounded"
-        onClick={() => setZodiacIndex((zodiacIndex + 1) % zodiacSigns.length)}
-      >
+     <button
+  className="bg-white bg-opacity-30 px-3 py-1 rounded"
+  onClick={() => setZodiacIndex((zodiacIndex + 1) % zodiacSigns.length)}
+>
         Next ▶️
       </button>
     </div>
