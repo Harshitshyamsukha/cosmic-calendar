@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import { Client } from "@gradio/client"; 
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
+
+const App = () => {
+  const panelRef = useRef(null);  // ✅ Move inside
+  const chatRef = useRef(null);   // ✅ Move inside
 
 const quizQuestions = [
   { question: "What is the age of the universe?", options: ["13.8 billion years", "4.5 billion years", "10 million years"], answer: "13.8 billion years" },
@@ -128,6 +132,40 @@ const addBookmark = () => {
     setFactIndex((prev) => (prev + 1) % cosmicFacts.length);
   };
 
+ // Panel click outside
+useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (panelRef.current && !panelRef.current.contains(event.target)) {
+      setActivePanel("");
+    }
+  };
+
+  if (activePanel) {
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [activePanel]);
+
+// Chat click outside
+useEffect(() => {
+  const handleChatClickOutside = (event) => {
+    if (chatRef.current && !chatRef.current.contains(event.target)) {
+      setShowChat(false);
+    }
+  };
+
+  if (showChat) {
+    document.addEventListener("mousedown", handleChatClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleChatClickOutside);
+  };
+}, [showChat]);
+
   const handleQuizAnswer = () => {
     const currentQuestion = quizQuestions[quizIndex];
     if (selectedOption === currentQuestion.answer) {
@@ -217,7 +255,7 @@ const addBookmark = () => {
 
 
         {activePanel && (
-          <div className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
+          <div ref={panelRef} className={`absolute top-40 left-1/2 transform -translate-x-1/2 p-4 rounded-lg w-11/12 max-w-lg ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-40 text-black"}`}>
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-xl font-semibold">{activePanel}</h2>
               <button onClick={() => setActivePanel('')}>✕</button>
@@ -360,7 +398,7 @@ const addBookmark = () => {
         </div>
 
         {showChat && (
-          <div className="fixed bottom-20 right-4 bg-black bg-opacity-80 p-4 rounded-lg w-72 text-white">
+          <div ref={chatRef} className="fixed bottom-20 right-4 bg-black bg-opacity-80 p-4 rounded-lg w-72 text-white">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-semibold">Chatbot</h2>
               <button onClick={() => setShowChat(false)}>✕</button>
