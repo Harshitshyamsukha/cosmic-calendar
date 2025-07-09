@@ -28,6 +28,81 @@ const quizQuestions = [
   { question: "What is the farthest planet from the Sun?", options: ["Neptune", "Uranus", "Pluto"], answer: "Neptune" }
 ];
 
+const zodiacSigns = [
+  {
+    name: "Aries",
+    symbol: "♈",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Aries_constellation_map.svg",
+    traits: "Energetic, courageous, determined."
+  },
+  {
+    name: "Taurus",
+    symbol: "♉",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Taurus_constellation_map.svg",
+    traits: "Reliable, patient, practical."
+  },
+  {
+    name: "Gemini",
+    symbol: "♊",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/5/5e/Gemini_constellation_map.svg",
+    traits: "Adaptable, outgoing, intelligent."
+  },
+  {
+    name: "Cancer",
+    symbol: "♋",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e2/Cancer_constellation_map.svg",
+    traits: "Emotional, nurturing, protective."
+  },
+  {
+    name: "Leo",
+    symbol: "♌",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/d/d0/Leo_constellation_map.svg",
+    traits: "Confident, ambitious, charismatic."
+  },
+  {
+    name: "Virgo",
+    symbol: "♍",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/7/7a/Virgo_constellation_map.svg",
+    traits: "Analytical, kind, hardworking."
+  },
+  {
+    name: "Libra",
+    symbol: "♎",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Libra_constellation_map.svg",
+    traits: "Diplomatic, fair, social."
+  },
+  {
+    name: "Scorpio",
+    symbol: "♏",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/3/35/Scorpius_constellation_map.svg",
+    traits: "Passionate, brave, resourceful."
+  },
+  {
+    name: "Sagittarius",
+    symbol: "♐",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/2/28/Sagittarius_constellation_map.svg",
+    traits: "Optimistic, honest, curious."
+  },
+  {
+    name: "Capricorn",
+    symbol: "♑",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/e/e5/Capricornus_constellation_map.svg",
+    traits: "Disciplined, responsible, serious."
+  },
+  {
+    name: "Aquarius",
+    symbol: "♒",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/3/3c/Aquarius_constellation_map.svg",
+    traits: "Innovative, independent, humanitarian."
+  },
+  {
+    name: "Pisces",
+    symbol: "♓",
+    constellationUrl: "https://upload.wikimedia.org/wikipedia/commons/5/51/Pisces_constellation_map.svg",
+    traits: "Empathetic, artistic, intuitive."
+  }
+];
+
 const cosmicFacts = [
   "The universe is 13.8 billion years old.",
   "There are more stars in the universe than grains of sand on Earth.",
@@ -56,6 +131,7 @@ const App = () => {
    const panelRef = useRef(null);  // ✅ Move inside
   const chatRef = useRef(null);   // ✅ Move inside
   const [viewMode, setViewMode] = useState("event"); // "event" or "constellation"
+  const [zodiacIndex, setZodiacIndex] = useState(0);
   const [background, setBackground] = useState("");
   const [explanation, setExplanation] = useState("");
   const [activePanel, setActivePanel] = useState("");
@@ -228,8 +304,13 @@ useEffect(() => {
   >
     {viewMode === "event" ? "Show Constellation" : "Show Event"}
   </button>
-
-  {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings"].map((btn) => (
+<button
+    className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
+    onClick={() => setActivePanel("Zodiac")}
+  >
+    Zodiac
+  </button>
+  {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings", "Zodiac"].map((btn) => (
     <button
       key={btn}
       className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
@@ -408,6 +489,37 @@ useEffect(() => {
                 <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
               </div>
             )}
+            {activePanel === 'Zodiac' && (
+  <div className="animate-fadeIn transition-all duration-500 text-center">
+    <div className="flex justify-between mb-4">
+      <button
+        className="bg-white bg-opacity-30 px-3 py-1 rounded"
+        onClick={() => setZodiacIndex((zodiacIndex - 1 + zodiacSigns.length) % zodiacSigns.length)}
+      >
+        ◀️ Prev
+      </button>
+      <button
+        className="bg-white bg-opacity-30 px-3 py-1 rounded"
+        onClick={() => setActivePanel("")}
+      >
+        🏠 Home
+      </button>
+      <button
+        className="bg-white bg-opacity-30 px-3 py-1 rounded"
+        onClick={() => setZodiacIndex((zodiacIndex + 1) % zodiacSigns.length)}
+      >
+        Next ▶️
+      </button>
+    </div>
+    <h2 className="text-2xl font-bold mb-2">{zodiacSigns[zodiacIndex].name} {zodiacSigns[zodiacIndex].symbol}</h2>
+    <img
+      src={zodiacSigns[zodiacIndex].constellationUrl}
+      alt={`${zodiacSigns[zodiacIndex].name} Constellation`}
+      className="mx-auto w-full max-w-xs mb-4 rounded-lg shadow-md"
+    />
+    <p className="italic text-lg">{zodiacSigns[zodiacIndex].traits}</p>
+  </div>
+)}
 
             {activePanel === 'Settings' && (
               <div className="animate-fadeIn transition-all duration-500">
