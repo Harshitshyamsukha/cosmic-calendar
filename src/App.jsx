@@ -322,7 +322,7 @@ useEffect(() => {
   >
     Zodiac
   </button>
-  {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Settings", "Zodiac"].map((btn) => (
+  {["Quiz", "Bookmarks", "Countdown", "Share", "Fact", "Zodiac", "Settings" ].map((btn) => (
     <button
       key={btn}
       className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
