@@ -316,12 +316,6 @@ useEffect(() => {
   >
     {viewMode === "event" ? "Show Constellation" : "Show Event"}
   </button>
-<button
-    className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
-    onClick={() => setActivePanel("Zodiac")}
-  >
-    Zodiac
-  </button>
   {["Quiz", "Bookmarks", "Countdown", "Share", "Zodiac", "Settings" ].map((btn) => (
     <button
       key={btn}
