@@ -301,49 +301,123 @@ useEffect(() => {
 
   return (
     <div
-  className={`min-h-screen bg-cover bg-center font-bahnschrift ${
-    theme === "dark" ? "text-white" : "text-black"
-  }`}
- style={{
-  backgroundImage:
-    viewMode === "event"
-      ? `url(${background})`
-      : viewMode === "constellation"
-      ? `url("https://upload.wikimedia.org/wikipedia/commons/3/37/Constellations_equirectangular.png")` // general star map
-      : `url(${zodiacSigns[zodiacIndex].constellationUrl})`,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-}}
-
-      <div className={`p-4 flex flex-col items-center ${theme === "dark" ? "bg-black bg-opacity-50 text-white" : "bg-white bg-opacity-30 text-black"}`}>
-        <h1 className="text-3xl font-bold mb-2 text-center">Cosmic Calendar</h1>
-     <div className="space-x-2">
-<div className="flex space-x-2 mb-2 justify-center">
-  {["event", "constellation", "zodiac"].map((mode) => (
-    <button
-      key={mode}
-      onClick={() => setViewMode(mode)}
-      className={`px-4 py-2 rounded-full font-semibold capitalize transition-all duration-300 ${
-        viewMode === mode
-          ? "bg-blue-600 text-white scale-105 shadow-lg"
-          : "bg-white bg-opacity-20 hover:bg-opacity-40"
+      className={`min-h-screen bg-cover bg-center font-bahnschrift ${
+        theme === "dark" ? "text-white" : "text-black"
       }`}
+     style={{
+        backgroundImage:
+          viewMode === "event"
+            ? `url(${background})`
+            : viewMode === "constellation"
+            ? `url("https://upload.wikimedia.org/wikipedia/commons/3/37/Constellations_equirectangular.png")`
+            : `url(${zodiacSigns[zodiacIndex].constellationUrl})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
     >
-      {mode}
-    </button>
-  ))}
-</div>
+      <div className="p-4 bg-black bg-opacity-50 text-center">
+        <h1 className="text-3xl font-bold mb-4">Cosmic Calendar</h1>
+        <div className="space-x-2">
+          {["event", "constellation", "zodiac"].map((mode) => (
+            <button
+              key={mode}
+              onClick={() => setViewMode(mode)}
+              className={`px-4 py-2 rounded-full font-semibold capitalize ${
+                viewMode === mode
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-black"
+              }`}
+            >
+              {mode}
+            </button>
+          ))}
+        </div>
+      </div>
 
-  {["Quiz", "Bookmarks", "Countdown", "Share", "Zodiac", "Settings" ].map((btn) => (
-    <button
-      key={btn}
-      className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
-      onClick={() => handlePanelToggle(btn)}
-    >
-      {btn}
-    </button>
-  ))}
-</div>
+      {viewMode === "event" && (
+        <div className="p-4 md:flex md:space-x-8">
+          <div className="bg-black bg-opacity-60 p-4 rounded-lg mb-4 md:mb-0">
+            <Calendar onChange={setDate} value={date} />
+            <p className="mt-2">Selected Date: {date.toDateString()}</p>
+            <button
+              className="mt-2 bg-white text-black px-2 py-1 rounded"
+              onClick={() => setFactIndex((prev) => (prev + 1) % quizQuestions.length)}
+            >
+              Next Fact
+            </button>
+          </div>
+          <div className="flex-1 bg-black bg-opacity-60 p-4 rounded-lg">
+            <h2 className="text-xl font-bold mb-2">
+              {explanation ? explanation.split(".")[0] : "Loading..."}
+            </h2>
+            <p>{explanation}</p>
+          </div>
+        </div>
+      )}
+
+      {viewMode === "constellation" && (
+        <div className="w-full flex justify-center mt-8">
+          <iframe
+            src={`https://virtualsky.lco.global/embed/index.html?longitude=77.6&latitude=12.9&constellations=true&cardinalpoints=true&clock=true&date=${date.toISOString()}`}
+            width="100%"
+            height="500"
+            frameBorder="0"
+            allowFullScreen
+            className="rounded-lg shadow-lg max-w-4xl"
+          ></iframe>
+        </div>
+      )}
+
+      {viewMode === "zodiac" && (
+        <div className="animate-fadeIn transition-all duration-500 text-center p-4 mt-8 bg-black bg-opacity-50 rounded-lg max-w-md mx-auto">
+          <div className="flex justify-between mb-4">
+            <button
+              className="bg-white bg-opacity-30 px-3 py-1 rounded"
+              onClick={() =>
+                setZodiacIndex(
+                  (zodiacIndex - 1 + zodiacSigns.length) % zodiacSigns.length
+                )
+              }
+            >
+              ◀️ Prev
+            </button>
+            <button
+              className="bg-white bg-opacity-30 px-3 py-1 rounded"
+              onClick={() =>
+                setZodiacIndex((zodiacIndex + 1) % zodiacSigns.length)
+              }
+            >
+              Next ▶️
+            </button>
+          </div>
+          <h2 className="text-2xl font-bold mb-2">
+            {zodiacSigns[zodiacIndex].name} {zodiacSigns[zodiacIndex].symbol}
+          </h2>
+          <img
+            src={zodiacSigns[zodiacIndex].constellationUrl}
+            alt={`${zodiacSigns[zodiacIndex].name} Constellation`}
+            className="mx-auto w-full max-w-xs mb-4 rounded-lg shadow-md"
+          />
+          <p className="italic text-lg">{zodiacSigns[zodiacIndex].traits}</p>
+        </div>
+      )}
+
+          {["Quiz", "Bookmarks", "Countdown", "Share", "Settings"].map(
+            (btn) => (
+              <button
+                key={btn}
+                className="bg-white bg-opacity-20 hover:bg-opacity-40 px-3 py-1 rounded"
+                onClick={() => handlePanelToggle(btn)}
+              >
+                {btn}
+              </button>
+            )
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
 
       </div>
      <div className="flex flex-col md:flex-row justify-between w-full px-4 md:px-16 mt-8 gap-8">
@@ -594,39 +668,6 @@ useEffect(() => {
     </button>
   </div>
 )}
-
-            {activePanel === 'Fact' && (
-              <div className="animate-fadeIn transition-all duration-500">
-                <p>{cosmicFacts[factIndex]}</p>
-                <button className="mt-2 bg-white bg-opacity-30 px-3 py-1 rounded" onClick={rotateFact}>Next Fact</button>
-              </div>
-            )}
-            {activePanel === 'Zodiac' && (
-  <div className="animate-fadeIn transition-all duration-500 text-center">
-    <div className="flex justify-between mb-4">
-      <button
-        className="bg-white bg-opacity-30 px-3 py-1 rounded"
-        onClick={() => setZodiacIndex((zodiacIndex - 1 + zodiacSigns.length) % zodiacSigns.length)}
-      >
-        ◀️ Prev
-      </button>
-     <button
-  className="bg-white bg-opacity-30 px-3 py-1 rounded"
-  onClick={() => setZodiacIndex((zodiacIndex + 1) % zodiacSigns.length)}
->
-        Next ▶️
-      </button>
-    </div>
-    <h2 className="text-2xl font-bold mb-2">{zodiacSigns[zodiacIndex].name} {zodiacSigns[zodiacIndex].symbol}</h2>
-    <img
-      src={zodiacSigns[zodiacIndex].constellationUrl}
-      alt={`${zodiacSigns[zodiacIndex].name} Constellation`}
-      className="mx-auto w-full max-w-xs mb-4 rounded-lg shadow-md"
-    />
-    <p className="italic text-lg">{zodiacSigns[zodiacIndex].traits}</p>
-  </div>
-)}
-
             {activePanel === 'Settings' && (
               <div className="animate-fadeIn transition-all duration-500">
                 <button className="bg-white bg-opacity-30 px-3 py-1 rounded" onClick={toggleTheme}>Toggle Theme</button>
