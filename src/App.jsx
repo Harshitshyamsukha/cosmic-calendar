@@ -102,11 +102,24 @@ const fetchAIResponse = async () => {
 };
 
 
-  const addBookmark = () => {
-    const newBookmarks = [...bookmarks, { date: date.toDateString(), background }];
-    setBookmarks(newBookmarks);
-    localStorage.setItem("cosmicBookmarks", JSON.stringify(newBookmarks));
-  };
+const addBookmark = () => {
+  const dateString = date.toDateString();
+  const alreadyBookmarked = bookmarks.some((b) => b.date === dateString);
+
+  if (alreadyBookmarked) {
+    alert("You've already bookmarked this date.");
+    return;
+  }
+
+  const newBookmarks = [...bookmarks, { date: dateString, background }];
+  setBookmarks(newBookmarks);
+  localStorage.setItem("cosmicBookmarks", JSON.stringify(newBookmarks));
+};
+  const deleteBookmark = (index) => {
+  const updated = bookmarks.filter((_, i) => i !== index);
+  setBookmarks(updated);
+  localStorage.setItem("cosmicBookmarks", JSON.stringify(updated));
+};
 
   const rotateFact = () => {
     setFactIndex((prev) => (prev + 1) % cosmicFacts.length);
@@ -258,16 +271,37 @@ const fetchAIResponse = async () => {
               </div>
             )}
             {activePanel === 'Bookmarks' && (
-              <div className="animate-fadeIn transition-all duration-500">
-                {bookmarks.length === 0 ? <p>No bookmarks yet.</p> : (
-                  <ul>
-                    {bookmarks.map((b, i) => (
-                      <li key={i}>{b.date}</li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            )}
+  <div className="animate-fadeIn transition-all duration-500">
+    {bookmarks.length === 0 ? (
+      <p>No bookmarks yet.</p>
+    ) : (
+      <>
+        <input
+          type="text"
+          placeholder="Search bookmarks..."
+          className="mb-2 p-1 rounded w-full text-black"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+        />
+        <ul className="space-y-2">
+          {bookmarks
+            .filter((b) => b.date.toLowerCase().includes(userInput.toLowerCase()))
+            .map((b, i) => (
+              <li key={i} className="flex justify-between items-center bg-white bg-opacity-20 p-2 rounded">
+                <span>{b.date}</span>
+                <button
+                  onClick={() => deleteBookmark(i)}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  ✕
+                </button>
+              </li>
+            ))}
+        </ul>
+      </>
+    )}
+  </div>
+)}
 
             {activePanel === 'Countdown' && (
               <div className="animate-fadeIn transition-all duration-500">
